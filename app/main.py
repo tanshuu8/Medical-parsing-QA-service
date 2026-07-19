@@ -1,6 +1,7 @@
 from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import HTMLResponse
 
 from app.core.config import settings
 from app.core.database import engine, Base
@@ -56,6 +57,21 @@ register_exception_handlers(app)
 app.include_router(api_router, prefix=settings.API_V1_STR)
 
 
+@app.get("/studio", response_class=HTMLResponse, tags=["studio"])
+def read_studio():
+    """
+    Serves the AI QA Version Studio single page application wizard.
+    """
+    import os
+    static_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "static")
+    html_path = os.path.join(static_dir, "studio.html")
+    try:
+        with open(html_path, "r", encoding="utf-8") as f:
+            return HTMLResponse(content=f.read(), status_code=200)
+    except FileNotFoundError:
+        return HTMLResponse(content="<h1>AI QA Version Studio template not found.</h1>", status_code=404)
+
+
 @app.get("/", tags=["health"])
 def health_check():
     """
@@ -65,3 +81,4 @@ def health_check():
         "status": "healthy",
         "project": settings.PROJECT_NAME
     }
+

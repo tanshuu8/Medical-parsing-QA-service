@@ -1,0 +1,2705 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI QA Version Studio</title>
+  <!-- Google Fonts Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <style>
+    /* Premium Theme & Variables */
+    :root {
+      --bg-primary: #090D16;
+      --bg-secondary: #111827;
+      --glass-bg: rgba(17, 24, 39, 0.7);
+      --glass-border: rgba(255, 255, 255, 0.08);
+      --glass-shadow: rgba(0, 0, 0, 0.4);
+      --text-primary: #F3F4F6;
+      --text-secondary: #9CA3AF;
+      --text-muted: #6B7280;
+      
+      --accent-violet: #8B5CF6;
+      --accent-cyan: #06B6D4;
+      --accent-emerald: #10B981;
+      --accent-coral: #EF4444;
+      --accent-amber: #F59E0B;
+      
+      --glow-violet: rgba(139, 92, 246, 0.3);
+      --glow-cyan: rgba(6, 182, 212, 0.3);
+      --glow-emerald: rgba(16, 185, 129, 0.3);
+      
+      --transition-base: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: var(--bg-primary);
+      background-image: 
+        radial-gradient(at 0% 0%, rgba(139, 92, 246, 0.15) 0px, transparent 50%),
+        radial-gradient(at 100% 100%, rgba(6, 182, 212, 0.15) 0px, transparent 50%);
+      background-attachment: fixed;
+      color: var(--text-primary);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      line-height: 1.5;
+      overflow-x: hidden;
+    }
+
+    /* Header styling */
+    header {
+      padding: 2rem 5% 1rem 5%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--glass-border);
+      backdrop-filter: blur(8px);
+      background-color: rgba(9, 13, 22, 0.5);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .brand-logo {
+      width: 2.2rem;
+      height: 2.2rem;
+      border-radius: 0.5rem;
+      background: linear-gradient(135deg, var(--accent-violet), var(--accent-cyan));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 0 15px var(--glow-violet);
+    }
+
+    .brand-logo svg {
+      width: 1.25rem;
+      height: 1.25rem;
+      fill: white;
+    }
+
+    .brand-title {
+      font-size: 1.25rem;
+      font-weight: 700;
+      letter-spacing: -0.025em;
+      background: linear-gradient(to right, var(--text-primary), #E5E7EB);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .brand-tag {
+      font-size: 0.7rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      padding: 0.15rem 0.4rem;
+      background-color: rgba(139, 92, 246, 0.15);
+      border: 1px solid rgba(139, 92, 246, 0.3);
+      color: #A78BFA;
+      border-radius: 0.25rem;
+    }
+
+    /* Main Container */
+    main {
+      flex: 1;
+      max-width: 1200px;
+      width: 90%;
+      margin: 2rem auto;
+      display: flex;
+      flex-direction: column;
+      gap: 2.5rem;
+    }
+
+    /* Timeline Stepper */
+    .stepper {
+      display: flex;
+      justify-content: space-between;
+      position: relative;
+      padding: 0 1rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .stepper::before {
+      content: '';
+      position: absolute;
+      top: 1.5rem;
+      left: 3rem;
+      right: 3rem;
+      height: 2px;
+      background-color: rgba(255, 255, 255, 0.1);
+      z-index: 1;
+    }
+
+    .stepper-progress {
+      position: absolute;
+      top: 1.5rem;
+      left: 3rem;
+      height: 2px;
+      background: linear-gradient(to right, var(--accent-emerald), var(--accent-violet));
+      z-index: 1;
+      width: 0%;
+      transition: var(--transition-base);
+    }
+
+    .step-item {
+      position: relative;
+      z-index: 2;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.5rem;
+      width: 6rem;
+      cursor: pointer;
+    }
+
+    .step-circle {
+      width: 3rem;
+      height: 3rem;
+      border-radius: 50%;
+      background-color: var(--bg-secondary);
+      border: 2px solid rgba(255, 255, 255, 0.1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 600;
+      color: var(--text-secondary);
+      transition: var(--transition-base);
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    }
+
+    .step-label {
+      font-size: 0.75rem;
+      font-weight: 500;
+      color: var(--text-secondary);
+      text-align: center;
+      transition: var(--transition-base);
+      white-space: nowrap;
+    }
+
+    /* Active Step State */
+    .step-item.active .step-circle {
+      border-color: var(--accent-violet);
+      color: white;
+      background-color: var(--bg-primary);
+      box-shadow: 0 0 15px var(--glow-violet);
+    }
+    
+    .step-item.active .step-label {
+      color: white;
+      font-weight: 600;
+    }
+
+    /* Completed Step State */
+    .step-item.completed .step-circle {
+      background-color: var(--accent-emerald);
+      border-color: var(--accent-emerald);
+      color: white;
+      box-shadow: 0 0 15px var(--glow-emerald);
+    }
+
+    .step-item.completed .step-label {
+      color: var(--accent-emerald);
+      font-weight: 600;
+    }
+
+    /* Glassmorphic Panel Layout */
+    .panel {
+      background-color: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      border-radius: 1rem;
+      box-shadow: 0 8px 32px var(--glass-shadow);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      padding: 2.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 2rem;
+      transition: var(--transition-base);
+    }
+
+    .panel-header {
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      padding-bottom: 1.25rem;
+    }
+
+    .panel-title {
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+      background: linear-gradient(135deg, white, var(--text-secondary));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .panel-desc {
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+    }
+
+    /* Step Content Panels */
+    .step-panel {
+      display: none;
+      animation: fadeIn 0.4s ease-out;
+    }
+
+    .step-panel.active {
+      display: flex;
+      flex-direction: column;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Buttons */
+    .btn-group {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 1rem;
+      border-top: 1px solid rgba(255, 255, 255, 0.05);
+      padding-top: 1.5rem;
+    }
+
+    .btn {
+      font-family: inherit;
+      font-weight: 600;
+      font-size: 0.9rem;
+      padding: 0.75rem 1.5rem;
+      border-radius: 0.5rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      transition: var(--transition-base);
+      border: 1px solid transparent;
+      outline: none;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--accent-violet), var(--accent-cyan));
+      color: white;
+      box-shadow: 0 4px 15px rgba(139, 92, 246, 0.2);
+    }
+
+    .btn-primary:hover:not(:disabled) {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(139, 92, 246, 0.4);
+    }
+
+    .btn-secondary {
+      background-color: rgba(255, 255, 255, 0.05);
+      border-color: rgba(255, 255, 255, 0.08);
+      color: var(--text-secondary);
+    }
+
+    .btn-secondary:hover:not(:disabled) {
+      background-color: rgba(255, 255, 255, 0.1);
+      color: white;
+    }
+
+    .btn:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+      transform: none !important;
+      box-shadow: none !important;
+    }
+
+    /* Forms & Drag Drop Zone */
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      max-width: 450px;
+    }
+
+    label {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--text-secondary);
+    }
+
+    input[type="text"], textarea {
+      font-family: inherit;
+      background-color: rgba(0, 0, 0, 0.2);
+      border: 1px solid var(--glass-border);
+      color: white;
+      padding: 0.75rem 1rem;
+      border-radius: 0.5rem;
+      font-size: 0.9rem;
+      outline: none;
+      transition: var(--transition-base);
+      width: 100%;
+    }
+
+    input[type="text"]:focus, textarea:focus {
+      border-color: var(--accent-violet);
+      box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.15);
+    }
+
+    .dropzone {
+      border: 2px dashed var(--glass-border);
+      border-radius: 0.75rem;
+      padding: 3rem 2rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 1rem;
+      cursor: pointer;
+      background-color: rgba(255, 255, 255, 0.01);
+      transition: var(--transition-base);
+      text-align: center;
+    }
+
+    .dropzone:hover, .dropzone.dragover {
+      border-color: var(--accent-violet);
+      background-color: rgba(139, 92, 246, 0.03);
+    }
+
+    .dropzone-icon {
+      width: 3.5rem;
+      height: 3.5rem;
+      border-radius: 50%;
+      background-color: rgba(255, 255, 255, 0.03);
+      border: 1px solid var(--glass-border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: var(--transition-base);
+    }
+
+    .dropzone:hover .dropzone-icon {
+      background-color: rgba(139, 92, 246, 0.1);
+      border-color: rgba(139, 92, 246, 0.3);
+      color: var(--accent-violet);
+    }
+
+    .dropzone-icon svg {
+      width: 1.75rem;
+      height: 1.75rem;
+      fill: var(--text-secondary);
+      transition: var(--transition-base);
+    }
+
+    .dropzone:hover .dropzone-icon svg {
+      fill: var(--accent-violet);
+    }
+
+    .dropzone-text {
+      font-size: 0.95rem;
+      color: var(--text-secondary);
+    }
+
+    .dropzone-text span {
+      color: var(--accent-violet);
+      font-weight: 600;
+    }
+
+    /* Selected File View */
+    .file-details {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background-color: rgba(255, 255, 255, 0.02);
+      border: 1px solid var(--glass-border);
+      padding: 1rem 1.25rem;
+      border-radius: 0.5rem;
+      width: 100%;
+    }
+
+    .file-info {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .file-icon {
+      background-color: rgba(239, 68, 68, 0.1);
+      color: var(--accent-coral);
+      padding: 0.5rem;
+      border-radius: 0.375rem;
+      display: flex;
+    }
+
+    .file-name {
+      font-weight: 500;
+      font-size: 0.9rem;
+    }
+
+    .file-size {
+      font-size: 0.75rem;
+      color: var(--text-secondary);
+    }
+
+    .btn-remove-file {
+      background: none;
+      border: none;
+      color: var(--text-secondary);
+      cursor: pointer;
+      padding: 0.25rem;
+      display: flex;
+      transition: var(--transition-base);
+    }
+
+    .btn-remove-file:hover {
+      color: var(--accent-coral);
+    }
+
+    /* Hierarchical Tree (Step 2) */
+    .tree-container {
+      background-color: rgba(0, 0, 0, 0.2);
+      border: 1px solid var(--glass-border);
+      border-radius: 0.75rem;
+      max-height: 400px;
+      overflow-y: auto;
+      padding: 1rem;
+    }
+
+    .tree-node {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.75rem;
+      padding: 0.6rem 0.75rem;
+      border-radius: 0.375rem;
+      margin-bottom: 0.25rem;
+      transition: var(--transition-base);
+      cursor: pointer;
+    }
+
+    .tree-node:hover {
+      background-color: rgba(255, 255, 255, 0.03);
+    }
+
+    .tree-node-checkbox {
+      margin-top: 0.25rem;
+      width: 1rem;
+      height: 1rem;
+      accent-color: var(--accent-violet);
+      cursor: pointer;
+    }
+
+    .tree-node-content {
+      display: flex;
+      flex-direction: column;
+      gap: 0.15rem;
+    }
+
+    .tree-node-title {
+      font-size: 0.9rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .tree-node-badge {
+      font-size: 0.65rem;
+      font-weight: 500;
+      padding: 0.1rem 0.35rem;
+      background-color: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 0.25rem;
+      color: var(--text-secondary);
+    }
+
+    .tree-node-body {
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+      max-width: 800px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .tree-node.level-0 {
+      margin-left: 0;
+      border-left: 2px solid rgba(139, 92, 246, 0.3);
+      padding-left: 0.5rem;
+    }
+
+    .tree-node.level-1 {
+      margin-left: 1.5rem;
+      border-left: 2px solid rgba(6, 182, 212, 0.3);
+      padding-left: 0.5rem;
+    }
+
+    .tree-node.level-2 {
+      margin-left: 3rem;
+      border-left: 2px dashed rgba(255, 255, 255, 0.1);
+      padding-left: 0.5rem;
+    }
+    
+    .tree-node.level-3 {
+      margin-left: 4.5rem;
+      border-left: 2px dotted rgba(255, 255, 255, 0.1);
+      padding-left: 0.5rem;
+    }
+
+    /* Alerts */
+    .alert {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.75rem;
+      padding: 1rem 1.25rem;
+      border-radius: 0.5rem;
+      border: 1px solid transparent;
+      margin-bottom: 1.5rem;
+    }
+
+    .alert-success {
+      background-color: rgba(16, 185, 129, 0.08);
+      border-color: rgba(16, 185, 129, 0.2);
+      color: #A7F3D0;
+    }
+
+    .alert-error {
+      background-color: rgba(239, 68, 68, 0.08);
+      border-color: rgba(239, 68, 68, 0.2);
+      color: #FEE2E2;
+    }
+
+    .alert-warning {
+      background-color: rgba(245, 158, 11, 0.08);
+      border-color: rgba(245, 158, 11, 0.2);
+      color: #FEF3C7;
+    }
+
+    .alert-icon {
+      display: flex;
+      flex-shrink: 0;
+      margin-top: 0.15rem;
+    }
+
+    .alert-icon svg {
+      width: 1.2rem;
+      height: 1.2rem;
+      fill: currentColor;
+    }
+
+    .alert-content {
+      font-size: 0.85rem;
+    }
+
+    .alert-title {
+      font-weight: 600;
+      margin-bottom: 0.25rem;
+    }
+
+    /* Spinner Loader */
+    .loader-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 1rem;
+      padding: 3rem 0;
+    }
+
+    .loader {
+      width: 3rem;
+      height: 3rem;
+      border: 3px solid rgba(139, 92, 246, 0.1);
+      border-top-color: var(--accent-violet);
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .loader-text {
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+      animation: pulse 1.5s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 0.6; }
+      50% { opacity: 1; }
+    }
+
+    /* QA Cards List (Step 3) */
+    .qa-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1.25rem;
+    }
+
+    .qa-card {
+      background-color: rgba(255, 255, 255, 0.02);
+      border: 1px solid var(--glass-border);
+      border-radius: 0.75rem;
+      padding: 1.5rem;
+      transition: var(--transition-base);
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .qa-card:hover {
+      border-color: rgba(139, 92, 246, 0.2);
+      background-color: rgba(255, 255, 255, 0.03);
+    }
+
+    .qa-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      padding-bottom: 0.75rem;
+      gap: 1rem;
+    }
+
+    .qa-card-title {
+      font-size: 1rem;
+      font-weight: 700;
+      color: white;
+    }
+
+    .qa-card-badge {
+      font-size: 0.7rem;
+      font-weight: 600;
+      padding: 0.2rem 0.5rem;
+      border-radius: 0.25rem;
+      background-color: rgba(6, 182, 212, 0.15);
+      color: #A5F3FC;
+      border: 1px solid rgba(6, 182, 212, 0.3);
+      white-space: nowrap;
+    }
+    
+    .qa-card-badge.badge-warning {
+      background-color: rgba(245, 158, 11, 0.15);
+      color: #FEF3C7;
+      border-color: rgba(245, 158, 11, 0.3);
+    }
+
+    .qa-card-field {
+      display: flex;
+      flex-direction: column;
+      gap: 0.3rem;
+    }
+
+    .qa-card-label {
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .qa-card-value {
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+    }
+
+    .qa-steps-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+      padding-left: 1.25rem;
+    }
+
+    .qa-step-item {
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+    }
+
+    /* Version Match Staleness View (Step 5) */
+    .staleness-container {
+      display: flex;
+      flex-direction: column;
+      gap: 2rem;
+    }
+
+    .status-banner {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      padding: 1.5rem;
+      border-radius: 0.75rem;
+      border: 1px solid transparent;
+    }
+
+    .status-banner-success {
+      background: linear-gradient(135deg, rgba(16, 185, 129, 0.15), rgba(16, 185, 129, 0.03));
+      border-color: rgba(16, 185, 129, 0.3);
+      box-shadow: 0 0 15px rgba(16, 185, 129, 0.05);
+    }
+
+    .status-banner-stale {
+      background: linear-gradient(135deg, rgba(239, 68, 68, 0.15), rgba(239, 68, 68, 0.03));
+      border-color: rgba(239, 68, 68, 0.3);
+      box-shadow: 0 0 15px rgba(239, 68, 68, 0.05);
+    }
+
+    .status-banner-icon {
+      width: 3rem;
+      height: 3rem;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+    }
+
+    .status-banner-success .status-banner-icon {
+      background-color: var(--accent-emerald);
+      box-shadow: 0 0 15px rgba(16, 185, 129, 0.4);
+    }
+
+    .status-banner-stale .status-banner-icon {
+      background-color: var(--accent-coral);
+      box-shadow: 0 0 15px rgba(239, 68, 68, 0.4);
+    }
+
+    .status-banner-details {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .status-title {
+      font-size: 1.15rem;
+      font-weight: 700;
+      margin-bottom: 0.2rem;
+    }
+
+    .status-desc {
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+    }
+
+    .comparison-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1.5rem;
+    }
+
+    @media (min-width: 768px) {
+      .comparison-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    .comparison-card {
+      background-color: rgba(255, 255, 255, 0.02);
+      border: 1px solid var(--glass-border);
+      border-radius: 0.75rem;
+      padding: 1.5rem;
+    }
+
+    .comparison-card-title {
+      font-size: 1rem;
+      font-weight: 700;
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      color: white;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      padding-bottom: 0.5rem;
+    }
+
+    .diff-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    .diff-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background-color: rgba(0, 0, 0, 0.15);
+      padding: 0.75rem 1rem;
+      border-radius: 0.5rem;
+      border: 1px solid rgba(255, 255, 255, 0.03);
+    }
+
+    .diff-node-title {
+      font-size: 0.85rem;
+      font-weight: 500;
+    }
+
+    .change-badge {
+      font-size: 0.65rem;
+      font-weight: 600;
+      padding: 0.15rem 0.45rem;
+      border-radius: 0.25rem;
+      text-transform: uppercase;
+    }
+
+    .badge-modified {
+      background-color: rgba(245, 158, 11, 0.15);
+      color: #FBBF24;
+      border: 1px solid rgba(245, 158, 11, 0.3);
+    }
+
+    .badge-removed {
+      background-color: rgba(239, 68, 68, 0.15);
+      color: #F87171;
+      border: 1px solid rgba(239, 68, 68, 0.3);
+    }
+    
+    .badge-new {
+      background-color: rgba(16, 185, 129, 0.15);
+      color: #34D399;
+      border: 1px solid rgba(16, 185, 129, 0.3);
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 2rem 0;
+      color: var(--text-muted);
+      font-size: 0.85rem;
+    }
+
+    /* SVG Helpers */
+    .svg-icon {
+      width: 1.25rem;
+      height: 1.25rem;
+      fill: currentColor;
+    }
+
+    /* ============== COMPARISON DASHBOARD (Step 5) ============== */
+
+    /* Summary Metric Cards */
+    .metrics-row {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+
+    @media (max-width: 900px) {
+      .metrics-row {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+
+    .metric-card {
+      background: rgba(255, 255, 255, 0.025);
+      border: 1px solid var(--glass-border);
+      border-radius: 0.75rem;
+      padding: 1.25rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      backdrop-filter: blur(6px);
+      transition: var(--transition-base);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .metric-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: var(--metric-accent, var(--accent-violet));
+      opacity: 0.6;
+      border-radius: 0.75rem 0.75rem 0 0;
+    }
+
+    .metric-card:hover {
+      border-color: rgba(255, 255, 255, 0.12);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+    }
+
+    .metric-label {
+      font-size: 0.72rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--text-muted);
+    }
+
+    .metric-value {
+      font-size: 2rem;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      color: var(--metric-color, white);
+      line-height: 1;
+    }
+
+    .metric-sub {
+      font-size: 0.72rem;
+      color: var(--text-muted);
+    }
+
+    /* Dashboard Tabs */
+    .dash-tabs {
+      display: flex;
+      gap: 0;
+      border-bottom: 1px solid var(--glass-border);
+      margin-bottom: 1.5rem;
+    }
+
+    .dash-tab {
+      padding: 0.75rem 1.5rem;
+      font-family: inherit;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      background: none;
+      border: none;
+      border-bottom: 2px solid transparent;
+      cursor: pointer;
+      transition: var(--transition-base);
+      position: relative;
+    }
+
+    .dash-tab:hover {
+      color: var(--text-secondary);
+    }
+
+    .dash-tab.active {
+      color: white;
+      border-bottom-color: var(--accent-violet);
+    }
+
+    .dash-tab-panel {
+      display: none;
+      animation: fadeIn 0.3s ease-out;
+    }
+
+    .dash-tab-panel.active {
+      display: block;
+    }
+
+    /* Change Cards */
+    .change-cards-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .change-card {
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid var(--glass-border);
+      border-radius: 0.75rem;
+      overflow: hidden;
+      transition: var(--transition-base);
+    }
+
+    .change-card:hover {
+      border-color: rgba(255, 255, 255, 0.12);
+    }
+
+    .change-card.status-MODIFIED {
+      border-left: 4px solid var(--accent-amber);
+    }
+    .change-card.status-NEW {
+      border-left: 4px solid var(--accent-emerald);
+    }
+    .change-card.status-REMOVED {
+      border-left: 4px solid var(--accent-coral);
+    }
+    .change-card.status-UNCHANGED {
+      border-left: 4px solid var(--text-muted);
+    }
+
+    .change-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 1.25rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+    }
+
+    .change-card-title {
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: white;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .change-card-body {
+      padding: 1rem 1.25rem;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+    }
+
+    @media (max-width: 768px) {
+      .change-card-body {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .diff-block {
+      border-radius: 0.5rem;
+      padding: 0.85rem;
+      font-size: 0.8rem;
+      line-height: 1.6;
+      color: var(--text-secondary);
+      font-family: 'Consolas', 'Monaco', monospace;
+      white-space: pre-wrap;
+      word-break: break-word;
+      max-height: 200px;
+      overflow-y: auto;
+    }
+
+    .diff-block-old {
+      background: rgba(239, 68, 68, 0.06);
+      border: 1px solid rgba(239, 68, 68, 0.15);
+    }
+
+    .diff-block-new {
+      background: rgba(16, 185, 129, 0.06);
+      border: 1px solid rgba(16, 185, 129, 0.15);
+    }
+
+    .diff-block-label {
+      font-size: 0.68rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 0.5rem;
+      display: block;
+    }
+
+    .diff-block-old .diff-block-label { color: #F87171; }
+    .diff-block-new .diff-block-label { color: #34D399; }
+
+    /* Status Badges (reused) */
+    .badge-unchanged {
+      background-color: rgba(107, 114, 128, 0.15);
+      color: #9CA3AF;
+      border: 1px solid rgba(107, 114, 128, 0.3);
+    }
+
+    .badge-stale {
+      background-color: rgba(245, 158, 11, 0.15);
+      color: #FBBF24;
+      border: 1px solid rgba(245, 158, 11, 0.3);
+    }
+
+    .badge-uptodate {
+      background-color: rgba(16, 185, 129, 0.15);
+      color: #34D399;
+      border: 1px solid rgba(16, 185, 129, 0.3);
+    }
+
+    /* QA Impact Cards */
+    .qa-impact-card {
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid var(--glass-border);
+      border-radius: 0.75rem;
+      padding: 1.25rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      transition: var(--transition-base);
+    }
+
+    .qa-impact-card:hover {
+      border-color: rgba(255, 255, 255, 0.12);
+    }
+
+    .qa-impact-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 1rem;
+    }
+
+    .qa-impact-title {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: white;
+    }
+
+    .qa-impact-reason {
+      font-size: 0.82rem;
+      color: var(--text-secondary);
+      padding: 0.6rem 0.85rem;
+      background: rgba(0, 0, 0, 0.15);
+      border-radius: 0.5rem;
+      border-left: 3px solid var(--accent-amber);
+    }
+
+    .qa-impact-details-btn {
+      font-family: inherit;
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--accent-cyan);
+      background: rgba(6, 182, 212, 0.08);
+      border: 1px solid rgba(6, 182, 212, 0.2);
+      border-radius: 0.375rem;
+      padding: 0.4rem 0.75rem;
+      cursor: pointer;
+      transition: var(--transition-base);
+      align-self: flex-start;
+    }
+
+    .qa-impact-details-btn:hover {
+      background: rgba(6, 182, 212, 0.15);
+      border-color: rgba(6, 182, 212, 0.4);
+    }
+
+    .qa-impact-detail-content {
+      display: none;
+      padding: 0.85rem;
+      background: rgba(0, 0, 0, 0.12);
+      border-radius: 0.5rem;
+      border: 1px solid rgba(255, 255, 255, 0.04);
+      font-size: 0.82rem;
+      color: var(--text-secondary);
+    }
+
+    .qa-impact-detail-content.open {
+      display: block;
+    }
+
+    /* Version Overview Side-by-Side */
+    .version-overview-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
+    }
+
+    @media (max-width: 768px) {
+      .version-overview-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .version-card {
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid var(--glass-border);
+      border-radius: 0.75rem;
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .version-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      border-radius: 0.75rem 0.75rem 0 0;
+    }
+
+    .version-card.v1-card::before {
+      background: linear-gradient(to right, var(--accent-violet), var(--accent-cyan));
+    }
+
+    .version-card.v2-card::before {
+      background: linear-gradient(to right, var(--accent-emerald), var(--accent-cyan));
+    }
+
+    .version-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .version-card-tag {
+      font-size: 0.68rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      padding: 0.2rem 0.6rem;
+      border-radius: 0.25rem;
+    }
+
+    .v1-tag {
+      background: rgba(139, 92, 246, 0.15);
+      color: #A78BFA;
+      border: 1px solid rgba(139, 92, 246, 0.3);
+    }
+
+    .v2-tag {
+      background: rgba(16, 185, 129, 0.15);
+      color: #34D399;
+      border: 1px solid rgba(16, 185, 129, 0.3);
+    }
+
+    .version-card-title {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: white;
+    }
+
+    .version-stat-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.6rem 0;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+    }
+
+    .version-stat-row:last-child {
+      border-bottom: none;
+    }
+
+    .version-stat-label {
+      font-size: 0.82rem;
+      color: var(--text-secondary);
+    }
+
+    .version-stat-value {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: white;
+    }
+
+    /* Animated counter */
+    @keyframes countUp {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .animate-count {
+      animation: countUp 0.5s ease-out forwards;
+    }
+
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="brand">
+      <div class="brand-logo">
+        <svg viewBox="0 0 24 24">
+          <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-2 10H7v-2h10v2z"/>
+        </svg>
+      </div>
+      <div class="brand-title">AI QA Version Studio</div>
+      <span class="brand-tag">RAG Pipeline</span>
+    </div>
+  </header>
+
+  <main>
+    <!-- 5-Step Stepper Progress Bar -->
+    <div class="stepper">
+      <div class="stepper-progress" id="stepperProgress"></div>
+      
+      <div class="step-item active" onclick="jumpToStep(1)">
+        <div class="step-circle" id="circle1">1</div>
+        <div class="step-label">Upload V1</div>
+      </div>
+      <div class="step-item" onclick="jumpToStep(2)">
+        <div class="step-circle" id="circle2">2</div>
+        <div class="step-label">Select Sections</div>
+      </div>
+      <div class="step-item" onclick="jumpToStep(3)">
+        <div class="step-circle" id="circle3">3</div>
+        <div class="step-label">Generate QA</div>
+      </div>
+      <div class="step-item" onclick="jumpToStep(4)">
+        <div class="step-circle" id="circle4">4</div>
+        <div class="step-label">Upload V2</div>
+      </div>
+      <div class="step-item" onclick="jumpToStep(5)">
+        <div class="step-circle" id="circle5">5</div>
+        <div class="step-label">Compare</div>
+      </div>
+    </div>
+
+    <!-- MAIN PANEL CONTEXT WIZARD -->
+    <div class="panel">
+      
+      <!-- STEP 1: UPLOAD V1 -->
+      <div class="step-panel active" id="panel1">
+        <div class="panel-header">
+          <h2 class="panel-title">
+            <svg class="svg-icon" viewBox="0 0 24 24"><path d="M9 16h6v-6h4l-7-7-7 7h4zm-4 2h14v2H5z"/></svg>
+            Step 1: Upload Version 1 Manual
+          </h2>
+          <p class="panel-desc">Upload the baseline PDF version of the medical device manual to parse its structural nodes.</p>
+        </div>
+        
+        <div style="display: flex; flex-direction: column; gap: 1.5rem; margin-top: 1.5rem;">
+          <div class="form-group">
+            <label for="v1VersionInput">Document Version String</label>
+            <input type="text" id="v1VersionInput" value="1.0.0" placeholder="e.g. 1.0.0">
+          </div>
+
+          <div class="dropzone" id="v1Dropzone">
+            <div class="dropzone-icon">
+              <svg viewBox="0 0 24 24">
+                <path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/>
+              </svg>
+            </div>
+            <div class="dropzone-text" id="v1DropzoneText">
+              <span>Click to select</span> or drag & drop the PDF file here
+            </div>
+            <input type="file" id="v1FileInput" accept=".pdf" style="display: none;">
+          </div>
+
+          <div id="v1FileDetailsContainer" style="display: none;">
+            <div class="file-details">
+              <div class="file-info">
+                <span class="file-icon">
+                  <svg class="svg-icon" viewBox="0 0 24 24"><path d="M20 2H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-2 12H10v-2h8v2zm0-4H10V8h8v2zm-4-4h-4V4h4v2z"/></svg>
+                </span>
+                <div>
+                  <div class="file-name" id="v1FileName">filename.pdf</div>
+                  <div class="file-size" id="v1FileSize">0 KB</div>
+                </div>
+              </div>
+              <button class="btn-remove-file" id="v1RemoveFileBtn">
+                <svg class="svg-icon" viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+              </button>
+            </div>
+          </div>
+
+          <div id="v1Alerts"></div>
+          
+          <div class="loader-container" id="v1Loader" style="display: none;">
+            <div class="loader"></div>
+            <div class="loader-text">Parsing PDF hierarchy structure...</div>
+          </div>
+        </div>
+
+        <div class="btn-group">
+          <div></div>
+          <button class="btn btn-primary" id="v1NextBtn" disabled>
+            Upload & Process
+            <svg class="svg-icon" viewBox="0 0 24 24"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- STEP 2: SELECT SECTIONS -->
+      <div class="step-panel" id="panel2">
+        <div class="panel-header">
+          <h2 class="panel-title">
+            <svg class="svg-icon" viewBox="0 0 24 24"><path d="M3 13h2v-2H3v2zm0 4h2v-2H3v2zm0-8h2V7H3v2zm4 4h14v-2H7v2zm0 4h14v-2H7v2zM7 7v2h14V7H7z"/></svg>
+            Step 2: Select Document Sections
+          </h2>
+          <p class="panel-desc">Choose the parsed manual chapters or specific paragraphs to include as context scope in generating test cases.</p>
+        </div>
+
+        <div style="display: flex; flex-direction: column; gap: 1.5rem; margin-top: 1.5rem;">
+          <div id="v1DocMetaDisplay" class="alert alert-success" style="display: none; margin-bottom: 0;"></div>
+          
+          <div class="tree-container" id="nodesTreeContainer">
+            <div class="empty-state">No nodes loaded yet.</div>
+          </div>
+
+          <div id="v2AlertsStep2"></div>
+
+          <div class="loader-container" id="selectionLoader" style="display: none;">
+            <div class="loader"></div>
+            <div class="loader-text">Saving user highlight selection...</div>
+          </div>
+        </div>
+
+        <div class="btn-group">
+          <button class="btn btn-secondary" onclick="prevStep()">
+            <svg class="svg-icon" viewBox="0 0 24 24"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>
+            Back
+          </button>
+          <button class="btn btn-primary" id="v2NextBtn" disabled>
+            Save Selection & Proceed
+            <svg class="svg-icon" viewBox="0 0 24 24"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- STEP 3: GENERATE QA -->
+      <div class="step-panel" id="panel3">
+        <div class="panel-header">
+          <h2 class="panel-title">
+            <svg class="svg-icon" viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-2 10H7v-2h10v2z"/></svg>
+            Step 3: Generate Structured QA Test Cases
+          </h2>
+          <p class="panel-desc">Configure your engineering validation focus. The backend pipeline utilizes Google Gemini to draft professional QA verification sheets.</p>
+        </div>
+
+        <div style="display: flex; flex-direction: column; gap: 1.5rem; margin-top: 1.5rem;">
+          <div class="form-group" style="max-width: 100%;">
+            <label for="promptInput">Verification Prompts & Directives</label>
+            <textarea id="promptInput" rows="3" placeholder="Specify device validation instructions...">Verify device setup, battery warnings, and threshold display alarms.</textarea>
+          </div>
+
+          <div id="v3Alerts"></div>
+
+          <div class="loader-container" id="generationLoader" style="display: none;">
+            <div class="loader"></div>
+            <div class="loader-text">Invoking Google Gemini model to draft structured QA Test Cases...</div>
+          </div>
+
+          <div id="qaResultsContainer" style="display: none;">
+            <h3 style="font-size: 1.1rem; font-weight: 600; margin-bottom: 1rem; color: white;">Drafted QA Verification Sheets</h3>
+            <div class="qa-grid" id="qaGrid"></div>
+          </div>
+        </div>
+
+        <div class="btn-group">
+          <button class="btn btn-secondary" onclick="prevStep()">
+            <svg class="svg-icon" viewBox="0 0 24 24"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>
+            Back
+          </button>
+          <div>
+            <button class="btn btn-secondary" id="generateQAButton" style="display: inline-flex; margin-right: 0.5rem;" onclick="triggerQAGeneration()">
+              Generate QA Test Cases
+            </button>
+            <button class="btn btn-primary" id="v3NextBtn" disabled onclick="nextStep()">
+              Proceed to Version 2
+              <svg class="svg-icon" viewBox="0 0 24 24"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/></svg>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- STEP 4: UPLOAD V2 -->
+      <div class="step-panel" id="panel4">
+        <div class="panel-header">
+          <h2 class="panel-title">
+            <svg class="svg-icon" viewBox="0 0 24 24"><path d="M9 16h6v-6h4l-7-7-7 7h4zm-4 2h14v2H5z"/></svg>
+            Step 4: Upload Version 2 (Updates & Relocations)
+          </h2>
+          <p class="panel-desc">Upload the updated revision PDF of the manual. The backend matching layer auto-aligns segments across revisions.</p>
+        </div>
+
+        <div style="display: flex; flex-direction: column; gap: 1.5rem; margin-top: 1.5rem;">
+          <div class="form-group">
+            <label for="v2VersionInput">New Document Version String</label>
+            <input type="text" id="v2VersionInput" value="2.0.0" placeholder="e.g. 2.0.0">
+          </div>
+
+          <div class="dropzone" id="v2Dropzone">
+            <div class="dropzone-icon">
+              <svg viewBox="0 0 24 24">
+                <path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/>
+              </svg>
+            </div>
+            <div class="dropzone-text" id="v2DropzoneText">
+              <span>Click to select</span> or drag & drop the PDF file here
+            </div>
+            <input type="file" id="v2FileInput" accept=".pdf" style="display: none;">
+          </div>
+
+          <div id="v2FileDetailsContainer" style="display: none;">
+            <div class="file-details">
+              <div class="file-info">
+                <span class="file-icon">
+                  <svg class="svg-icon" viewBox="0 0 24 24"><path d="M20 2H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-2 12H10v-2h8v2zm0-4H10V8h8v2zm-4-4h-4V4h4v2z"/></svg>
+                </span>
+                <div>
+                  <div class="file-name" id="v2FileName">filename.pdf</div>
+                  <div class="file-size" id="v2FileSize">0 KB</div>
+                </div>
+              </div>
+              <button class="btn-remove-file" id="v2RemoveFileBtn">
+                <svg class="svg-icon" viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+              </button>
+            </div>
+          </div>
+
+          <div id="v4Alerts"></div>
+          
+          <div class="loader-container" id="v2Loader" style="display: none;">
+            <div class="loader"></div>
+            <div class="loader-text">Uploading V2 and calculating node fuzzy alignments...</div>
+          </div>
+        </div>
+
+        <div class="btn-group">
+          <button class="btn btn-secondary" onclick="prevStep()">
+            <svg class="svg-icon" viewBox="0 0 24 24"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>
+            Back
+          </button>
+          <button class="btn btn-primary" id="v4NextBtn" disabled>
+            Upload & Align
+            <svg class="svg-icon" viewBox="0 0 24 24"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/></svg>
+          </button>
+          <button class="btn btn-primary" id="v4CompareBtn" style="display: none;" onclick="nextStep()">
+            Compare Versions
+            <svg class="svg-icon" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- STEP 5: COMPARE VERSIONS -->
+      <div class="step-panel" id="panel5">
+        <div class="panel-header">
+          <h2 class="panel-title">
+            <svg class="svg-icon" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>
+            Step 5: Version Comparison Dashboard
+          </h2>
+          <p class="panel-desc">Comprehensive analysis of structural changes between document versions and their impact on your QA test cases.</p>
+        </div>
+
+        <div class="staleness-container" style="margin-top: 1.5rem;">
+          
+          <div id="v5Loader" class="loader-container">
+            <div class="loader"></div>
+            <div class="loader-text">Analyzing version alignment reports and testing context hashes...</div>
+          </div>
+
+          <div id="stalenessResults" style="display: none; flex-direction: column; gap: 0;">
+
+            <!-- ===== TOP SUMMARY METRIC CARDS ===== -->
+            <div class="metrics-row" id="metricsRow">
+              <div class="metric-card" style="--metric-accent: var(--accent-cyan);">
+                <div class="metric-label">Total Sections</div>
+                <div class="metric-value animate-count" id="metricTotal">—</div>
+                <div class="metric-sub">Across both versions</div>
+              </div>
+              <div class="metric-card" style="--metric-accent: var(--accent-amber); --metric-color: #FBBF24;">
+                <div class="metric-label">Modified</div>
+                <div class="metric-value animate-count" id="metricModified">—</div>
+                <div class="metric-sub">Content changed</div>
+              </div>
+              <div class="metric-card" style="--metric-accent: var(--accent-emerald); --metric-color: #34D399;">
+                <div class="metric-label">Added</div>
+                <div class="metric-value animate-count" id="metricAdded">—</div>
+                <div class="metric-sub">New in V2</div>
+              </div>
+              <div class="metric-card" style="--metric-accent: var(--accent-coral); --metric-color: #F87171;">
+                <div class="metric-label">Removed</div>
+                <div class="metric-value animate-count" id="metricRemoved">—</div>
+                <div class="metric-sub">Deleted from V1</div>
+              </div>
+              <div class="metric-card" style="--metric-accent: var(--accent-violet); --metric-color: #A78BFA;">
+                <div class="metric-label">Affected QA</div>
+                <div class="metric-value animate-count" id="metricAffectedQA">—</div>
+                <div class="metric-sub">Test cases impacted</div>
+              </div>
+            </div>
+
+            <!-- ===== TABBED INTERFACE ===== -->
+            <div class="dash-tabs" id="dashTabs">
+              <button class="dash-tab active" data-tab="changesTab" onclick="switchDashTab('changesTab')">
+                <svg class="svg-icon" viewBox="0 0 24 24" style="width:0.9rem;height:0.9rem;margin-right:0.3rem;vertical-align:middle;"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-2 10H7v-2h10v2z"/></svg>
+                Changes
+              </button>
+              <button class="dash-tab" data-tab="qaImpactTab" onclick="switchDashTab('qaImpactTab')">
+                <svg class="svg-icon" viewBox="0 0 24 24" style="width:0.9rem;height:0.9rem;margin-right:0.3rem;vertical-align:middle;"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>
+                QA Impact
+              </button>
+              <button class="dash-tab" data-tab="versionOverviewTab" onclick="switchDashTab('versionOverviewTab')">
+                <svg class="svg-icon" viewBox="0 0 24 24" style="width:0.9rem;height:0.9rem;margin-right:0.3rem;vertical-align:middle;"><path d="M4 6H2v14c0 1.1.9 2 2 2h14v-2H4V6zm16-4H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H8V4h12v12z"/></svg>
+                Version Overview
+              </button>
+            </div>
+
+            <!-- TAB 1: CHANGES -->
+            <div class="dash-tab-panel active" id="changesTab">
+              <div class="change-cards-grid" id="changeCardsGrid">
+                <div class="empty-state">No change data available.</div>
+              </div>
+            </div>
+
+            <!-- TAB 2: QA IMPACT -->
+            <div class="dash-tab-panel" id="qaImpactTab">
+              <div class="change-cards-grid" id="qaImpactGrid">
+                <div class="empty-state">No QA impact data available.</div>
+              </div>
+            </div>
+
+            <!-- TAB 3: VERSION OVERVIEW -->
+            <div class="dash-tab-panel" id="versionOverviewTab">
+              <div class="version-overview-grid" id="versionOverviewGrid">
+                <div class="empty-state">No version overview data available.</div>
+              </div>
+            </div>
+
+          </div>
+
+          <div id="v5Alerts"></div>
+        </div>
+
+        <div class="btn-group">
+          <button class="btn btn-secondary" onclick="prevStep()">
+            <svg class="svg-icon" viewBox="0 0 24 24"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>
+            Back
+          </button>
+          <button class="btn btn-primary" onclick="restartStudio()">
+            Restart Studio Wizard
+            <svg class="svg-icon" viewBox="0 0 24 24"><path d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/></svg>
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <script>
+    // State Engine
+    const state = {
+      currentStep: 1,
+      maxReachedStep: 1,
+      
+      // Step 1
+      v1File: null,
+      v1Version: "1.0.0",
+      v1Doc: null, // parsed DocumentResponse
+      
+      // Step 2
+      nodes: [],
+      selectedNodeIds: new Set(),
+      selection: null, // SelectionResponse
+      
+      // Step 3
+      prompt: "Verify device setup, battery warnings, and threshold display alarms.",
+      generation: null, // QAGenerationResponse
+      testCases: [],
+      
+      // Step 4
+      v2File: null,
+      v2Version: "2.0.0",
+      v2Doc: null, // parsed DocumentResponse
+      
+      // Step 5
+      stalenessReport: null
+    };
+
+    const API_BASE = window.location.origin;
+
+    // Timeline stepper controller
+    function updateStepper() {
+      const totalSteps = 5;
+      const progressPercent = ((state.maxReachedStep - 1) / (totalSteps - 1)) * 100;
+      document.getElementById('stepperProgress').style.width = `${progressPercent}%`;
+
+      for (let i = 1; i <= totalSteps; i++) {
+        const item = document.querySelectorAll('.step-item')[i - 1];
+        const circle = document.getElementById(`circle${i}`);
+        
+        // Remove existing states
+        item.classList.remove('active', 'completed');
+        circle.innerHTML = i;
+        
+        if (i === state.currentStep) {
+          item.classList.add('active');
+        } else if (i < state.maxReachedStep || (i === 1 && state.v1Doc) || (i === 2 && state.selectedNodeIds.size > 0) || (i === 3 && state.generation) || (i === 4 && state.v2Doc)) {
+          item.classList.add('completed');
+          circle.innerHTML = '✓';
+        }
+      }
+    }
+
+    function showPanel(stepNum) {
+      for (let i = 1; i <= 5; i++) {
+        const panel = document.getElementById(`panel${i}`);
+        panel.classList.remove('active');
+      }
+      document.getElementById(`panel${stepNum}`).classList.add('active');
+      
+      // Hook page scroll to top on change
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function jumpToStep(stepNum) {
+      // Let user click only if it is a step they have unlocked/completed or previous step
+      if (stepNum <= state.maxReachedStep) {
+        state.currentStep = stepNum;
+        updateStepper();
+        showPanel(stepNum);
+        
+        // Trigger specific panel setups
+        if (stepNum === 2 && state.nodes.length === 0) {
+          fetchV1Nodes();
+        } else if (stepNum === 5) {
+          fetchStalenessAssessment();
+        }
+      }
+    }
+
+    function nextStep() {
+      if (state.currentStep < 5) {
+        state.currentStep++;
+        if (state.currentStep > state.maxReachedStep) {
+          state.maxReachedStep = state.currentStep;
+        }
+        updateStepper();
+        showPanel(state.currentStep);
+        
+        // Auto trigger setup logic
+        if (state.currentStep === 2) {
+          fetchV1Nodes();
+        } else if (state.currentStep === 5) {
+          fetchStalenessAssessment();
+        }
+      }
+    }
+
+    function prevStep() {
+      if (state.currentStep > 1) {
+        state.currentStep--;
+        updateStepper();
+        showPanel(state.currentStep);
+      }
+    }
+
+    function restartStudio() {
+      // Reset State
+      state.currentStep = 1;
+      state.maxReachedStep = 1;
+      state.v1File = null;
+      state.v1Version = "1.0.0";
+      state.v1Doc = null;
+      state.nodes = [];
+      state.selectedNodeIds.clear();
+      state.selection = null;
+      state.generation = null;
+      state.testCases = [];
+      state.v2File = null;
+      state.v2Version = "2.0.0";
+      state.v2Doc = null;
+      state.stalenessReport = null;
+      state.v1Nodes = [];
+      state.v2Nodes = [];
+      state.diffReport = null;
+
+      // Clean inputs
+      document.getElementById('v1FileInput').value = "";
+      document.getElementById('v1VersionInput').value = "1.0.0";
+      document.getElementById('v2FileInput').value = "";
+      document.getElementById('v2VersionInput').value = "2.0.0";
+      document.getElementById('v1FileDetailsContainer').style.display = "none";
+      document.getElementById('v2FileDetailsContainer').style.display = "none";
+      document.getElementById('v1DropzoneText').innerHTML = "<span>Click to select</span> or drag & drop the PDF file here";
+      document.getElementById('v2DropzoneText').innerHTML = "<span>Click to select</span> or drag & drop the PDF file here";
+      document.getElementById('v1Dropzone').style.display = "flex";
+      document.getElementById('v2Dropzone').style.display = "flex";
+      document.getElementById('v1NextBtn').disabled = true;
+      document.getElementById('v2NextBtn').disabled = true;
+      document.getElementById('v3NextBtn').disabled = true;
+      document.getElementById('v4NextBtn').style.display = "inline-flex";
+      document.getElementById('v4NextBtn').disabled = true;
+      document.getElementById('v4CompareBtn').style.display = "none";
+      document.getElementById('v1Alerts').innerHTML = "";
+      document.getElementById('v2AlertsStep2').innerHTML = "";
+      document.getElementById('v3Alerts').innerHTML = "";
+      document.getElementById('v4Alerts').innerHTML = "";
+      document.getElementById('v5Alerts').innerHTML = "";
+      document.getElementById('qaResultsContainer').style.display = "none";
+      document.getElementById('stalenessResults').style.display = "none";
+
+      // Reset dashboard elements
+      document.getElementById('metricTotal').textContent = '—';
+      document.getElementById('metricModified').textContent = '—';
+      document.getElementById('metricAdded').textContent = '—';
+      document.getElementById('metricRemoved').textContent = '—';
+      document.getElementById('metricAffectedQA').textContent = '—';
+      document.getElementById('changeCardsGrid').innerHTML = '<div class="empty-state">No change data available.</div>';
+      document.getElementById('qaImpactGrid').innerHTML = '<div class="empty-state">No QA impact data available.</div>';
+      document.getElementById('versionOverviewGrid').innerHTML = '<div class="empty-state">No version overview data available.</div>';
+      switchDashTab('changesTab');
+
+      updateStepper();
+      showPanel(1);
+    }
+
+    // Step 1 File upload configuration
+    const v1Dropzone = document.getElementById('v1Dropzone');
+    const v1FileInput = document.getElementById('v1FileInput');
+    
+    v1Dropzone.addEventListener('click', () => v1FileInput.click());
+    
+    v1FileInput.addEventListener('change', (e) => {
+      if (e.target.files.length > 0) {
+        handleV1FileSelect(e.target.files[0]);
+      }
+    });
+
+    // Drag-drop events V1
+    ['dragenter', 'dragover'].forEach(eventName => {
+      v1Dropzone.addEventListener(eventName, (e) => {
+        e.preventDefault();
+        v1Dropzone.classList.add('dragover');
+      }, false);
+    });
+
+    ['dragleave', 'drop'].forEach(eventName => {
+      v1Dropzone.addEventListener(eventName, (e) => {
+        e.preventDefault();
+        v1Dropzone.classList.remove('dragover');
+      }, false);
+    });
+
+    v1Dropzone.addEventListener('drop', (e) => {
+      const dt = e.dataTransfer;
+      const files = dt.files;
+      if (files.length > 0) {
+        handleV1FileSelect(files[0]);
+      }
+    });
+
+    function handleV1FileSelect(file) {
+      if (file.type !== 'application/pdf') {
+        renderAlert('v1Alerts', 'error', 'Invalid file type', 'Please upload a PDF document.');
+        return;
+      }
+      state.v1File = file;
+      document.getElementById('v1FileName').innerText = file.name;
+      document.getElementById('v1FileSize').innerText = `${(file.size / 1024).toFixed(1)} KB`;
+      document.getElementById('v1FileDetailsContainer').style.display = "block";
+      document.getElementById('v1Dropzone').style.display = "none";
+      document.getElementById('v1NextBtn').disabled = false;
+      document.getElementById('v1Alerts').innerHTML = "";
+    }
+
+    document.getElementById('v1RemoveFileBtn').addEventListener('click', (e) => {
+      e.stopPropagation();
+      state.v1File = null;
+      v1FileInput.value = "";
+      document.getElementById('v1FileDetailsContainer').style.display = "none";
+      document.getElementById('v1Dropzone').style.display = "flex";
+      document.getElementById('v1NextBtn').disabled = true;
+    });
+
+    // Upload & Ingest V1 PDF
+    document.getElementById('v1NextBtn').addEventListener('click', async () => {
+      if (!state.v1File) return;
+
+      const version = document.getElementById('v1VersionInput').value.trim();
+      if (!version) {
+        renderAlert('v1Alerts', 'error', 'Version required', 'Please input a document version (e.g. 1.0.0).');
+        return;
+      }
+      state.v1Version = version;
+
+      const formData = new FormData();
+      formData.append('file', state.v1File);
+      formData.append('version', state.v1Version);
+
+      document.getElementById('v1Loader').style.display = "flex";
+      document.getElementById('v1NextBtn').disabled = true;
+      document.getElementById('v1Alerts').innerHTML = "";
+
+      try {
+        const response = await fetch(`${API_BASE}/api/v1/documents/`, {
+          method: 'POST',
+          body: formData
+        });
+
+        if (response.status === 201) {
+          const doc = await response.json();
+          state.v1Doc = doc;
+          renderAlert('v1Alerts', 'success', 'Ingestion Complete', `Document "${doc.name}" was successfully loaded.`);
+          
+          // Move to next step automatically after a brief delay
+          setTimeout(() => {
+            nextStep();
+          }, 800);
+        } else {
+          const err = await response.json();
+          renderAlert('v1Alerts', 'error', 'Ingestion Failed', err.detail || 'Could not parse document details.');
+          document.getElementById('v1NextBtn').disabled = false;
+        }
+      } catch (err) {
+        renderAlert('v1Alerts', 'error', 'Network Connection Error', `Failed to contact API server: ${err.message}`);
+        document.getElementById('v1NextBtn').disabled = false;
+      } finally {
+        document.getElementById('v1Loader').style.display = "none";
+      }
+    });
+
+    // Step 2: Fetch parsed nodes for selection tree
+    async function fetchV1Nodes() {
+      if (!state.v1Doc) return;
+      
+      const treeContainer = document.getElementById('nodesTreeContainer');
+      treeContainer.innerHTML = '<div class="loader-container"><div class="loader"></div><div class="loader-text">Loading document structure tree...</div></div>';
+      
+      document.getElementById('v1DocMetaDisplay').innerHTML = `
+        <div class="alert-title">Baseline Context Loaded</div>
+        <div style="font-size:0.8rem; opacity:0.8;">
+          Name: ${state.v1Doc.name} | Version: ${state.v1Doc.version}
+        </div>
+      `;
+      document.getElementById('v1DocMetaDisplay').style.display = "flex";
+
+      try {
+        const response = await fetch(`${API_BASE}/api/v1/nodes/?document_id=${state.v1Doc.id}`);
+        if (response.status === 200) {
+          const nodes = await response.json();
+          state.nodes = nodes;
+          renderNodesTree(nodes);
+        } else {
+          treeContainer.innerHTML = '<div class="empty-state">Failed to load nodes.</div>';
+          renderAlert('v2AlertsStep2', 'error', 'Fetch Error', 'Failed to retrieve parsed nodes.');
+        }
+      } catch (e) {
+        treeContainer.innerHTML = '<div class="empty-state">Failed to load nodes.</div>';
+        renderAlert('v2AlertsStep2', 'error', 'Network Error', e.message);
+      }
+    }
+
+    function renderNodesTree(nodes) {
+      const treeContainer = document.getElementById('nodesTreeContainer');
+      treeContainer.innerHTML = "";
+
+      if (nodes.length === 0) {
+        treeContainer.innerHTML = '<div class="empty-state">No nodes found in this document.</div>';
+        return;
+      }
+
+      nodes.forEach(node => {
+        const item = document.createElement('div');
+        item.className = `tree-node level-${node.level}`;
+        
+        // Snippet length logic
+        const maxLen = 120;
+        const bodySnippet = node.body.length > maxLen ? node.body.substring(0, maxLen).replace(/\n/g, ' ') + '...' : node.body.replace(/\n/g, ' ');
+
+        item.innerHTML = `
+          <input type="checkbox" class="tree-node-checkbox" id="chk-${node.id}" value="${node.id}">
+          <div class="tree-node-content">
+            <div class="tree-node-title">
+              ${node.title} 
+              <span class="tree-node-badge">Page ${node.page_number}</span>
+              <span class="tree-node-badge" style="background-color:rgba(139,92,246,0.1); border-color:rgba(139,92,246,0.2);">L${node.level}</span>
+            </div>
+            ${node.body ? `<div class="tree-node-body">${bodySnippet}</div>` : ''}
+          </div>
+        `;
+
+        // Checkbox change tracker
+        const checkbox = item.querySelector('.tree-node-checkbox');
+        
+        // Toggle on node click (excluding checkbox click to prevent double event)
+        item.addEventListener('click', (e) => {
+          if (e.target !== checkbox) {
+            checkbox.checked = !checkbox.checked;
+            toggleNodeSelection(node.id, checkbox.checked);
+          }
+        });
+
+        checkbox.addEventListener('change', (e) => {
+          toggleNodeSelection(node.id, e.target.checked);
+        });
+
+        treeContainer.appendChild(item);
+      });
+    }
+
+    function toggleNodeSelection(nodeId, isChecked) {
+      if (isChecked) {
+        state.selectedNodeIds.add(nodeId);
+      } else {
+        state.selectedNodeIds.delete(nodeId);
+      }
+      
+      // Enable Next button only if at least one node is checked
+      document.getElementById('v2NextBtn').disabled = state.selectedNodeIds.size === 0;
+    }
+
+    // Step 2 Submission (Store selections locally and proceed — no API call here)
+    document.getElementById('v2NextBtn').addEventListener('click', () => {
+      if (state.selectedNodeIds.size === 0) return;
+      nextStep();
+    });
+
+
+    // Step 3: Trigger QA Generation
+    // Chains: 1) Create Selection API  →  2) Generate QA API (fully automated)
+    async function triggerQAGeneration() {
+      if (!state.v1Doc || state.selectedNodeIds.size === 0) return;
+
+      const customPrompt = document.getElementById('promptInput').value.trim();
+      if (!customPrompt) {
+        renderAlert('v3Alerts', 'error', 'Prompt required', 'Please describe what you want the test cases to verify.');
+        return;
+      }
+      state.prompt = customPrompt;
+
+      document.getElementById('generationLoader').style.display = "flex";
+      document.getElementById('generateQAButton').disabled = true;
+      document.getElementById('v3NextBtn').disabled = true;
+      document.getElementById('v3Alerts').innerHTML = "";
+      document.getElementById('qaResultsContainer').style.display = "none";
+
+      // --- Phase 1: Automatically create the Selection via API ---
+      try {
+        const selPayload = {
+          name: `Studio Selection (${new Date().toLocaleTimeString()})`,
+          document_version: state.v1Version,
+          node_ids: Array.from(state.selectedNodeIds)
+        };
+
+        const selResponse = await fetch(`${API_BASE}/api/v1/selection/`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(selPayload)
+        });
+
+        if (selResponse.status !== 201) {
+          const selErr = await selResponse.json();
+          renderAlert('v3Alerts', 'error', 'Selection Failed', selErr.detail || 'Could not save document section selection.');
+          document.getElementById('generationLoader').style.display = "none";
+          document.getElementById('generateQAButton').disabled = false;
+          return;
+        }
+
+        const selection = await selResponse.json();
+        state.selection = selection;
+      } catch (selError) {
+        renderAlert('v3Alerts', 'error', 'Connection Error', `Selection API failed: ${selError.message}`);
+        document.getElementById('generationLoader').style.display = "none";
+        document.getElementById('generateQAButton').disabled = false;
+        return;
+      }
+
+      // --- Phase 2: Automatically generate QA Test Cases via API ---
+      const nodeQueryString = Array.from(state.selectedNodeIds).map(nid => `node_ids=${nid}`).join('&');
+      const params = new URLSearchParams({
+        document_id: state.v1Doc.id,
+        prompt: state.prompt,
+        selection_id: state.selection.id
+      });
+
+      const requestUrl = `${API_BASE}/api/v1/generations/?${nodeQueryString}&${params.toString()}`;
+
+      try {
+        const response = await fetch(requestUrl, {
+          method: 'POST'
+        });
+
+        if (response.status === 201) {
+          const gen = await response.json();
+          state.generation = gen;
+          
+          try {
+            const rawCases = JSON.parse(gen.response);
+            state.testCases = rawCases.test_cases || [];
+            
+            renderGeneratedTestCases(state.testCases);
+            document.getElementById('qaResultsContainer').style.display = "block";
+            document.getElementById('v3NextBtn').disabled = false;
+          } catch (parseErr) {
+            renderAlert('v3Alerts', 'warning', 'Format Warning', 'Test cases generated successfully but JSON parsing of output failed. Raw output: ' + gen.response);
+          }
+        } else {
+          const err = await response.json();
+          renderAlert('v3Alerts', 'error', 'LLM Pipeline Failed', err.detail || 'Gemini system error occurred.');
+        }
+      } catch (e) {
+        renderAlert('v3Alerts', 'error', 'Connection Error', e.message);
+      } finally {
+        document.getElementById('generationLoader').style.display = "none";
+        document.getElementById('generateQAButton').disabled = false;
+      }
+    }
+
+    function renderGeneratedTestCases(testCases) {
+      const grid = document.getElementById('qaGrid');
+      grid.innerHTML = "";
+
+      if (testCases.length === 0) {
+        grid.innerHTML = '<div class="empty-state">No test cases returned from model.</div>';
+        return;
+      }
+
+      testCases.forEach((tc, idx) => {
+        const card = document.createElement('div');
+        card.className = "qa-card";
+        
+        card.innerHTML = `
+          <div class="qa-card-header">
+            <div class="qa-card-title">Test Case ${idx + 1}: ${tc.title}</div>
+            <span class="qa-card-badge">${tc.traceability}</span>
+          </div>
+          
+          <div class="qa-card-field">
+            <div class="qa-card-label">Precondition</div>
+            <div class="qa-card-value">${tc.precondition}</div>
+          </div>
+
+          <div class="qa-card-field">
+            <div class="qa-card-label">Verification Steps</div>
+            <div class="qa-card-value">
+              <ol class="qa-steps-list">
+                ${tc.steps.map(step => `<li class="qa-step-item">${step}</li>`).join('')}
+              </ol>
+            </div>
+          </div>
+
+          <div class="qa-card-field">
+            <div class="qa-card-label">Expected Result</div>
+            <div class="qa-card-value" style="color: #A7F3D0; font-weight: 500;">${tc.expected_result}</div>
+          </div>
+        `;
+        grid.appendChild(card);
+      });
+    }
+
+    // Step 4 File upload configuration (V2)
+    const v2Dropzone = document.getElementById('v2Dropzone');
+    const v2FileInput = document.getElementById('v2FileInput');
+    
+    v2Dropzone.addEventListener('click', () => v2FileInput.click());
+    
+    v2FileInput.addEventListener('change', (e) => {
+      if (e.target.files.length > 0) {
+        handleV2FileSelect(e.target.files[0]);
+      }
+    });
+
+    // Drag-drop events V2
+    ['dragenter', 'dragover'].forEach(eventName => {
+      v2Dropzone.addEventListener(eventName, (e) => {
+        e.preventDefault();
+        v2Dropzone.classList.add('dragover');
+      }, false);
+    });
+
+    ['dragleave', 'drop'].forEach(eventName => {
+      v2Dropzone.addEventListener(eventName, (e) => {
+        e.preventDefault();
+        v2Dropzone.classList.remove('dragover');
+      }, false);
+    });
+
+    v2Dropzone.addEventListener('drop', (e) => {
+      const dt = e.dataTransfer;
+      const files = dt.files;
+      if (files.length > 0) {
+        handleV2FileSelect(files[0]);
+      }
+    });
+
+    function handleV2FileSelect(file) {
+      if (file.type !== 'application/pdf') {
+        renderAlert('v4Alerts', 'error', 'Invalid file type', 'Please upload a PDF document.');
+        return;
+      }
+      state.v2File = file;
+      document.getElementById('v2FileName').innerText = file.name;
+      document.getElementById('v2FileSize').innerText = `${(file.size / 1024).toFixed(1)} KB`;
+      document.getElementById('v2FileDetailsContainer').style.display = "block";
+      document.getElementById('v2Dropzone').style.display = "none";
+      document.getElementById('v4NextBtn').style.display = "inline-flex";
+      document.getElementById('v4NextBtn').disabled = false;
+      document.getElementById('v4CompareBtn').style.display = "none";
+      document.getElementById('v4Alerts').innerHTML = "";
+    }
+
+    document.getElementById('v2RemoveFileBtn').addEventListener('click', (e) => {
+      e.stopPropagation();
+      state.v2File = null;
+      v2FileInput.value = "";
+      document.getElementById('v2FileDetailsContainer').style.display = "none";
+      document.getElementById('v2Dropzone').style.display = "flex";
+      document.getElementById('v4NextBtn').style.display = "inline-flex";
+      document.getElementById('v4NextBtn').disabled = true;
+      document.getElementById('v4CompareBtn').style.display = "none";
+    });
+
+    // Upload & Align V2 PDF
+    document.getElementById('v4NextBtn').addEventListener('click', async () => {
+      if (!state.v2File) return;
+
+      const version = document.getElementById('v2VersionInput').value.trim();
+      if (!version) {
+        renderAlert('v4Alerts', 'error', 'Version required', 'Please input the new document version (e.g. 2.0.0).');
+        return;
+      }
+      state.v2Version = version;
+
+      const formData = new FormData();
+      formData.append('file', state.v2File);
+      formData.append('version', state.v2Version);
+
+      document.getElementById('v2Loader').style.display = "flex";
+      document.getElementById('v4NextBtn').disabled = true;
+      document.getElementById('v4Alerts').innerHTML = "";
+
+      try {
+        const response = await fetch(`${API_BASE}/api/v1/documents/`, {
+          method: 'POST',
+          body: formData
+        });
+
+        if (response.status === 201) {
+          const doc = await response.json();
+          state.v2Doc = doc;
+          renderAlert('v4Alerts', 'success', 'Alignment Completed', `Version "${doc.version}" uploaded and aligned successfully. Click "Compare Versions" below to view the comparison dashboard.`);
+          
+          // Hide Upload & Align button, and show Compare Versions button
+          document.getElementById('v4NextBtn').style.display = "none";
+          document.getElementById('v4CompareBtn').style.display = "inline-flex";
+        } else {
+          const err = await response.json();
+          renderAlert('v4Alerts', 'error', 'Upload Failed', err.detail || 'Could not align document revisions.');
+          document.getElementById('v4NextBtn').disabled = false;
+        }
+      } catch (err) {
+        renderAlert('v4Alerts', 'error', 'Connection Error', err.message);
+        document.getElementById('v4NextBtn').disabled = false;
+      } finally {
+        document.getElementById('v2Loader').style.display = "none";
+      }
+    });
+
+    // Step 5: Fetch Staleness Assessment + Document Diffs
+    async function fetchStalenessAssessment() {
+      if (!state.generation) return;
+
+      const generationId = state.generation.id || state.generation._id;
+      document.getElementById('v5Loader').style.display = "flex";
+      document.getElementById('stalenessResults').style.display = "none";
+      document.getElementById('v5Alerts').innerHTML = "";
+
+      try {
+        // Parallel fetch: staleness report + document diff report (from MongoDB)
+        const [stalenessRes, v1NodesRes, v2NodesRes] = await Promise.all([
+          fetch(`${API_BASE}/api/v1/generations/${generationId}`),
+          state.v1Doc ? fetch(`${API_BASE}/api/v1/nodes/?document_id=${state.v1Doc.id}`) : Promise.resolve(null),
+          state.v2Doc ? fetch(`${API_BASE}/api/v1/nodes/?document_id=${state.v2Doc.id}`) : Promise.resolve(null)
+        ]);
+
+        if (stalenessRes.status === 200) {
+          const report = await stalenessRes.json();
+          state.stalenessReport = report;
+
+          // Fetch V1 and V2 nodes for content diff
+          const v1Nodes = v1NodesRes && v1NodesRes.status === 200 ? await v1NodesRes.json() : state.nodes;
+          const v2Nodes = v2NodesRes && v2NodesRes.status === 200 ? await v2NodesRes.json() : [];
+
+          // Build local diff from node data
+          state.v1Nodes = v1Nodes;
+          state.v2Nodes = v2Nodes;
+          state.diffReport = buildLocalDiffReport(v1Nodes, v2Nodes, report);
+
+          renderComparisonDashboard(state.diffReport, report);
+          document.getElementById('stalenessResults').style.display = "flex";
+        } else {
+          renderAlert('v5Alerts', 'error', 'Analysis Error', 'Failed to retrieve impact staleness reports.');
+        }
+      } catch (e) {
+        renderAlert('v5Alerts', 'error', 'Connection Error', e.message);
+      } finally {
+        document.getElementById('v5Loader').style.display = "none";
+      }
+    }
+
+    // Build local diff report by cross-referencing V1/V2 nodes and staleness data
+    function buildLocalDiffReport(v1Nodes, v2Nodes, stalenessReport) {
+      const changedNodes = (stalenessReport.staleness_details && stalenessReport.staleness_details.changed_nodes) || [];
+      const v1Map = {};
+      v1Nodes.forEach(n => { v1Map[n.logical_node_id || n.id] = n; });
+      const v2Map = {};
+      v2Nodes.forEach(n => { v2Map[n.logical_node_id || n.id] = n; });
+
+      // Match V2 nodes to V1 by logical_node_id
+      const alignedSections = [];
+      const matchedV1 = new Set();
+      const matchedV2 = new Set();
+
+      // First: find direct matches by logical_node_id
+      v2Nodes.forEach(n2 => {
+        const logId = n2.logical_node_id;
+        const n1 = v1Map[logId];
+        if (n1) {
+          matchedV1.add(n1.id);
+          matchedV2.add(n2.id);
+          const isModified = n1.content_hash !== n2.content_hash;
+          alignedSections.push({
+            title: n2.title,
+            status: isModified ? 'MODIFIED' : 'UNCHANGED',
+            v1_body: n1.body,
+            v2_body: n2.body,
+            page_v1: n1.page_number,
+            page_v2: n2.page_number
+          });
+        }
+      });
+
+      // NEW nodes (in V2 but no match in V1)
+      v2Nodes.forEach(n2 => {
+        if (!matchedV2.has(n2.id)) {
+          alignedSections.push({
+            title: n2.title,
+            status: 'NEW',
+            v1_body: null,
+            v2_body: n2.body,
+            page_v1: null,
+            page_v2: n2.page_number
+          });
+        }
+      });
+
+      // REMOVED nodes (in V1 but no match in V2)
+      v1Nodes.forEach(n1 => {
+        if (!matchedV1.has(n1.id)) {
+          alignedSections.push({
+            title: n1.title,
+            status: 'REMOVED',
+            v1_body: n1.body,
+            v2_body: null,
+            page_v1: n1.page_number,
+            page_v2: null
+          });
+        }
+      });
+
+      const summary = {
+        total: alignedSections.length,
+        modified: alignedSections.filter(s => s.status === 'MODIFIED').length,
+        added: alignedSections.filter(s => s.status === 'NEW').length,
+        removed: alignedSections.filter(s => s.status === 'REMOVED').length,
+        unchanged: alignedSections.filter(s => s.status === 'UNCHANGED').length,
+        total_v1: v1Nodes.length,
+        total_v2: v2Nodes.length
+      };
+
+      return { sections: alignedSections, summary, changedNodes };
+    }
+
+    // ===== DASHBOARD TAB SWITCHER =====
+    function switchDashTab(tabId) {
+      document.querySelectorAll('.dash-tab').forEach(t => t.classList.remove('active'));
+      document.querySelectorAll('.dash-tab-panel').forEach(p => p.classList.remove('active'));
+      document.querySelector(`.dash-tab[data-tab="${tabId}"]`).classList.add('active');
+      document.getElementById(tabId).classList.add('active');
+    }
+
+    // ===== ANIMATED COUNTER =====
+    function animateCounter(elementId, targetValue, duration = 800) {
+      const el = document.getElementById(elementId);
+      const start = 0;
+      const startTime = performance.now();
+
+      function update(currentTime) {
+        const elapsed = currentTime - startTime;
+        const progress = Math.min(elapsed / duration, 1);
+        // easeOutQuart
+        const eased = 1 - Math.pow(1 - progress, 4);
+        const currentVal = Math.round(start + (targetValue - start) * eased);
+        el.textContent = currentVal;
+        if (progress < 1) {
+          requestAnimationFrame(update);
+        }
+      }
+      requestAnimationFrame(update);
+    }
+
+    // ===== MAIN COMPARISON DASHBOARD RENDERER =====
+    function renderComparisonDashboard(diffReport, stalenessReport) {
+      const { sections, summary, changedNodes } = diffReport;
+
+      // Compute affected QA count
+      const affectedQA = computeAffectedQACount(changedNodes);
+
+      // ---- 1) Populate Summary Metric Cards with animated counters ----
+      animateCounter('metricTotal', summary.total);
+      animateCounter('metricModified', summary.modified);
+      animateCounter('metricAdded', summary.added);
+      animateCounter('metricRemoved', summary.removed);
+      animateCounter('metricAffectedQA', affectedQA);
+
+      // ---- 2) Render Changes Tab ----
+      renderChangesTab(sections);
+
+      // ---- 3) Render QA Impact Tab ----
+      renderQAImpactTab(stalenessReport, changedNodes);
+
+      // ---- 4) Render Version Overview Tab ----
+      renderVersionOverviewTab(summary);
+    }
+
+    function computeAffectedQACount(changedNodes) {
+      if (!state.testCases || state.testCases.length === 0) return 0;
+      let count = 0;
+      state.testCases.forEach(tc => {
+        const isImpacted = changedNodes.some(cn => cn.title && tc.traceability && (
+          tc.traceability.toLowerCase().includes(cn.title.toLowerCase()) ||
+          cn.title.toLowerCase().includes(tc.traceability.toLowerCase())
+        ));
+        if (isImpacted) count++;
+      });
+      return count;
+    }
+
+    // ===== CHANGES TAB =====
+    function renderChangesTab(sections) {
+      const grid = document.getElementById('changeCardsGrid');
+      grid.innerHTML = '';
+
+      // Show non-unchanged first, then unchanged
+      const sorted = [...sections].sort((a, b) => {
+        const order = { MODIFIED: 0, NEW: 1, REMOVED: 2, UNCHANGED: 3 };
+        return (order[a.status] || 4) - (order[b.status] || 4);
+      });
+
+      if (sorted.length === 0) {
+        grid.innerHTML = '<div class="empty-state">No sections to compare.</div>';
+        return;
+      }
+
+      sorted.forEach(section => {
+        const card = document.createElement('div');
+        card.className = 'change-card status-' + section.status;
+
+        const badgeMap = {
+          MODIFIED: 'badge-modified',
+          NEW: 'badge-new',
+          REMOVED: 'badge-removed',
+          UNCHANGED: 'badge-unchanged'
+        };
+
+        const badgeClass = badgeMap[section.status] || 'badge-unchanged';
+        const statusLabel = section.status;
+
+        let bodyHTML = '';
+        const oldSnip = (section.v1_body || '').substring(0, 300).replace(/</g, '&lt;');
+        const newSnip = (section.v2_body || '').substring(0, 300).replace(/</g, '&lt;');
+
+        if (section.status === 'MODIFIED') {
+          bodyHTML = `
+            <div class="change-card-body">
+              <div class="diff-block diff-block-old">
+                <span class="diff-block-label">Old Content (V1)</span>
+                ${oldSnip}${(section.v1_body || '').length > 300 ? '…' : ''}
+              </div>
+              <div class="diff-block diff-block-new">
+                <span class="diff-block-label">New Content (V2)</span>
+                ${newSnip}${(section.v2_body || '').length > 300 ? '…' : ''}
+              </div>
+            </div>
+          `;
+        } else if (section.status === 'NEW') {
+          bodyHTML = `
+            <div class="change-card-body">
+              <div class="diff-block" style="background: rgba(255, 255, 255, 0.01); border: 1px dashed var(--glass-border); opacity: 0.5;">
+                <span class="diff-block-label" style="color: var(--text-muted);">Old Content (V1)</span>
+                <span style="font-style: italic; color: var(--text-muted);">Section did not exist in Version 1.</span>
+              </div>
+              <div class="diff-block diff-block-new">
+                <span class="diff-block-label">New Content (V2)</span>
+                ${newSnip}${(section.v2_body || '').length > 300 ? '…' : ''}
+              </div>
+            </div>
+          `;
+        } else if (section.status === 'REMOVED') {
+          bodyHTML = `
+            <div class="change-card-body">
+              <div class="diff-block diff-block-old">
+                <span class="diff-block-label">Old Content (V1)</span>
+                ${oldSnip}${(section.v1_body || '').length > 300 ? '…' : ''}
+              </div>
+              <div class="diff-block" style="background: rgba(255, 255, 255, 0.01); border: 1px dashed var(--glass-border); opacity: 0.5;">
+                <span class="diff-block-label" style="color: var(--text-muted);">New Content (V2)</span>
+                <span style="font-style: italic; color: var(--text-muted);">Section deleted/removed in Version 2.</span>
+              </div>
+            </div>
+          `;
+        } else {
+          // UNCHANGED
+          bodyHTML = `
+            <div class="change-card-body">
+              <div class="diff-block" style="background: rgba(255, 255, 255, 0.01); border: 1px solid rgba(255, 255, 255, 0.03);">
+                <span class="diff-block-label" style="color: var(--text-secondary);">Old Content (V1)</span>
+                ${oldSnip}${(section.v1_body || '').length > 300 ? '…' : ''}
+              </div>
+              <div class="diff-block" style="background: rgba(255, 255, 255, 0.01); border: 1px solid rgba(255, 255, 255, 0.03);">
+                <span class="diff-block-label" style="color: var(--text-secondary);">New Content (V2)</span>
+                ${newSnip}${(section.v2_body || '').length > 300 ? '…' : ''}
+              </div>
+            </div>
+          `;
+        }
+
+        card.innerHTML = `
+          <div class="change-card-header">
+            <div class="change-card-title">
+              <svg class="svg-icon" viewBox="0 0 24 24" style="width:1rem;height:1rem;"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>
+              ${section.title}
+            </div>
+            <span class="change-badge ${badgeClass}">${statusLabel}</span>
+          </div>
+          ${bodyHTML}
+        `;
+        grid.appendChild(card);
+      });
+    }
+
+    // ===== QA IMPACT TAB =====
+    function renderQAImpactTab(stalenessReport, changedNodes) {
+      const grid = document.getElementById('qaImpactGrid');
+      grid.innerHTML = '';
+
+      if (!state.testCases || state.testCases.length === 0) {
+        grid.innerHTML = '<div class="empty-state">No QA test cases available for impact analysis.</div>';
+        return;
+      }
+
+      state.testCases.forEach((tc, idx) => {
+        const isImpacted = changedNodes.some(cn => cn.title && tc.traceability && (
+          tc.traceability.toLowerCase().includes(cn.title.toLowerCase()) ||
+          cn.title.toLowerCase().includes(tc.traceability.toLowerCase())
+        ));
+
+        const statusBadgeClass = isImpacted ? 'badge-stale' : 'badge-uptodate';
+        const statusText = isImpacted ? 'STALE' : 'UP_TO_DATE';
+        const reason = isImpacted
+          ? `Source section "${tc.traceability}" has been modified in the new document version. Test case context may be outdated.`
+          : 'All referenced document sections are unchanged. Test case context remains valid.';
+
+        const detailId = `qaDetailContent_${idx}`;
+
+        const card = document.createElement('div');
+        card.className = 'qa-impact-card';
+        card.innerHTML = `
+          <div class="qa-impact-header">
+            <div class="qa-impact-title">Test Case ${idx + 1}: ${tc.title}</div>
+            <span class="change-badge ${statusBadgeClass}">${statusText}</span>
+          </div>
+          <div class="qa-impact-reason">${reason}</div>
+          <button class="qa-impact-details-btn" onclick="toggleQADetail('${detailId}', this)">View Details</button>
+          <div class="qa-impact-detail-content" id="${detailId}">
+            <div style="margin-bottom:0.5rem;"><strong>Precondition:</strong> ${tc.precondition}</div>
+            <div style="margin-bottom:0.5rem;"><strong>Steps:</strong>
+              <ol style="padding-left:1.25rem; margin-top:0.25rem;">
+                ${tc.steps.map(s => `<li>${s}</li>`).join('')}
+              </ol>
+            </div>
+            <div><strong>Expected Result:</strong> <span style="color:#A7F3D0;">${tc.expected_result}</span></div>
+            <div style="margin-top:0.5rem; font-size:0.75rem; color:var(--accent-cyan);"><strong>Traceability:</strong> ${tc.traceability}</div>
+          </div>
+        `;
+        grid.appendChild(card);
+      });
+    }
+
+    function toggleQADetail(detailId, btn) {
+      const el = document.getElementById(detailId);
+      el.classList.toggle('open');
+      btn.textContent = el.classList.contains('open') ? 'Hide Details' : 'View Details';
+    }
+
+    // ===== VERSION OVERVIEW TAB =====
+    function renderVersionOverviewTab(summary) {
+      const grid = document.getElementById('versionOverviewGrid');
+      grid.innerHTML = '';
+
+      const v1Name = state.v1Doc ? state.v1Doc.name : 'Version 1';
+      const v1Version = state.v1Doc ? state.v1Doc.version : '—';
+      const v2Name = state.v2Doc ? state.v2Doc.name : 'Version 2';
+      const v2Version = state.v2Doc ? state.v2Doc.version : '—';
+
+      grid.innerHTML = `
+        <!-- V1 Card -->
+        <div class="version-card v1-card">
+          <div class="version-card-header">
+            <div class="version-card-title">${v1Name}</div>
+            <span class="version-card-tag v1-tag">V${v1Version}</span>
+          </div>
+          <div class="version-stat-row">
+            <span class="version-stat-label">Total Sections</span>
+            <span class="version-stat-value">${summary.total_v1}</span>
+          </div>
+          <div class="version-stat-row">
+            <span class="version-stat-label">Unchanged</span>
+            <span class="version-stat-value" style="color: #9CA3AF;">${summary.unchanged}</span>
+          </div>
+          <div class="version-stat-row">
+            <span class="version-stat-label">Sections Removed</span>
+            <span class="version-stat-value" style="color: #F87171;">${summary.removed}</span>
+          </div>
+          <div class="version-stat-row">
+            <span class="version-stat-label">Sections Modified</span>
+            <span class="version-stat-value" style="color: #FBBF24;">${summary.modified}</span>
+          </div>
+          <div class="version-stat-row">
+            <span class="version-stat-label">Version Date</span>
+            <span class="version-stat-value">${state.v1Doc ? new Date(state.v1Doc.created_at).toLocaleDateString() : '—'}</span>
+          </div>
+        </div>
+
+        <!-- V2 Card -->
+        <div class="version-card v2-card">
+          <div class="version-card-header">
+            <div class="version-card-title">${v2Name}</div>
+            <span class="version-card-tag v2-tag">V${v2Version}</span>
+          </div>
+          <div class="version-stat-row">
+            <span class="version-stat-label">Total Sections</span>
+            <span class="version-stat-value">${summary.total_v2}</span>
+          </div>
+          <div class="version-stat-row">
+            <span class="version-stat-label">Unchanged</span>
+            <span class="version-stat-value" style="color: #9CA3AF;">${summary.unchanged}</span>
+          </div>
+          <div class="version-stat-row">
+            <span class="version-stat-label">New Sections Added</span>
+            <span class="version-stat-value" style="color: #34D399;">${summary.added}</span>
+          </div>
+          <div class="version-stat-row">
+            <span class="version-stat-label">Sections Modified</span>
+            <span class="version-stat-value" style="color: #FBBF24;">${summary.modified}</span>
+          </div>
+          <div class="version-stat-row">
+            <span class="version-stat-label">Version Date</span>
+            <span class="version-stat-value">${state.v2Doc ? new Date(state.v2Doc.created_at).toLocaleDateString() : '—'}</span>
+          </div>
+        </div>
+      `;
+    }
+
+    // Alert helper
+    function renderAlert(containerId, type, title, message) {
+      const container = document.getElementById(containerId);
+      let alertClass = "alert-success";
+      let iconSvg = `
+        <svg viewBox="0 0 24 24">
+          <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
+        </svg>
+      `;
+
+      if (type === 'error') {
+        alertClass = "alert-error";
+        iconSvg = `
+          <svg viewBox="0 0 24 24">
+            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/>
+          </svg>
+        `;
+      } else if (type === 'warning') {
+        alertClass = "alert-warning";
+        iconSvg = `
+          <svg viewBox="0 0 24 24">
+            <path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/>
+          </svg>
+        `;
+      }
+
+      container.innerHTML = `
+        <div class="alert ${alertClass}">
+          <div class="alert-icon">${iconSvg}</div>
+          <div class="alert-content">
+            <div class="alert-title">${title}</div>
+            <div>${message}</div>
+          </div>
+        </div>
+      `;
+    }
+  </script>
+</body>
+</html>
