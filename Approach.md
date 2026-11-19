@@ -34,7 +34,8 @@ The project follows a **Layered Clean Architecture** and **Domain-Driven Design 
 ```
 
 ### Separation of Concerns:
-- **Presentation**: FastAPI endpoints validate input shapes using Pydantic DTOs and handle HTTP responses.
+
+- **Presentation**: FastAPI endpoints validate incoming request schemas using Pydantic DTOs and return structured JSON responses.
 - **Domain Services**: Orchestrate business rules (reconstructing text, parsing layouts, evaluating fuzzy ratios, calling Gemini API) without being coupled to controllers or database drivers.
 - **Repositories**: Standardize data mutations. The SQL repositories inherit from a generic CRUD repository, isolating session commits.
 
