@@ -218,7 +218,7 @@ When uploading a new document version (e.g. V2), the system does not overwrite t
 - Ingesting V2 has no side effects on V1 selections since the selection is pinned to V1's document version.
 
 ### 3. Staleness Detection Workflow
-- When retrieving generations via `GET /generations/` or `GET /generations/{id}`, the system checks the SQLite database for a newer version of the parent document.
+- When retrieving generations via `GET /api/v1/generations/` or `GET /api/v1/generations/{id}`, the system checks the SQLite database for a newer version of the parent document.
 - It maps the generation's context nodes using their `logical_node_id`s to the latest document version.
 - It compares the stashed `content_hashes` in the generation against the latest version's node hashes. If a mismatch is found or a node was deleted, the generation's status is returned as `STALE`, along with a unified diff summary.
 - The generation is not automatically updated, allowing the user to review the changes before deciding whether to re-run the QA test case generator.
