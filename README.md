@@ -207,7 +207,7 @@ Detailed lifecycle flows of the ingestion, validation, and generation subsystems
 
 ### 1. Document Versioning & Matching Workflow
 When uploading a new document version (e.g. V2), the system does not overwrite the existing V1 records. It ingests V2, and if V1 is found, it performs node alignment:
-- Identifies exact matches via cryptographic `content_hash` (tagged `UNCHANGED`).
+- Identifies exact section matches via cryptographic SHA-256 `content_hash` (tagged `UNCHANGED`).
 - Runs **RapidFuzz** comparing titles and recursively reconstructed breadcrumb paths (`Root > Section > Title`) to match modified segments (tagged `MODIFIED`).
 - Assigns matching `logical_node_id`s to the newly aligned V2 nodes.
 - Saves a summary report of the version diff inside the MongoDB `document_diffs` collection.
