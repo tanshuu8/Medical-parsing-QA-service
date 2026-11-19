@@ -1,3 +1,4 @@
+"""Endpoints for ingesting, querying, and managing PDF document entities."""
 import os
 import tempfile
 from typing import List, Optional
