@@ -22,7 +22,7 @@ def get_db() -> Generator[Session, None, None]:
 
 async def get_mongodb_db() -> AsyncIOMotorDatabase:
     """
-    Dependency injection provider yielding async MongoDB client databases.
+    FastAPI dependency injection provider yielding async MongoDB database instances.
     """
     return await get_mongodb()
 
