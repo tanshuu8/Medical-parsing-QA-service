@@ -7,7 +7,7 @@ A production-quality RAG (Retrieval-Augmented Generation) backend system designe
 ## Technology Stack
 
 - **FastAPI**: Asynchronous high-performance web framework.
-- **SQLAlchemy ORM (SQLite)**: Relational database mapping structural entities (`Document`, `Node`, `Selection`, `SelectionNode`). SQLite is configured with `check_same_thread=False` to support concurrent requests.
+- **SQLAlchemy ORM (SQLite)**: Relational database mapping structural entities (`Document`, `Node`, `Selection`, `SelectionNode`). SQLite is configured with `check_same_thread=False` to safely support concurrent asynchronous requests.
 - **MongoDB (Motor Client)**: Document-oriented database for logging semi-structured LLM generations and tracking parsing failure diagnostics.
 - **Google Gemini API**: Generates professional verification test cases using structured JSON output prompts.
 - **PyMuPDF (fitz)**: Extracts text blocks, font sizes, coordinates, images, and tables from PDFs.
