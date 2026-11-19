@@ -5,6 +5,7 @@ from pydantic import BaseModel, Field
 
 
 class QAGenerationBase(BaseModel):
+    """Base attributes for LLM-generated QA verification test cases."""
     document_id: uuid.UUID = Field(..., description="Reference to SQL Document UUID")
     node_ids: List[uuid.UUID] = Field(default=[], description="List of SQL Node UUIDs utilized as context")
     content_hashes: Dict[str, str] = Field(default={}, description="Mapping of Node ID string to its content hash at time of generation")
