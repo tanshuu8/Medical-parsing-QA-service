@@ -18,7 +18,7 @@ class EntityNotFoundException(AppException):
 
 
 class EntityAlreadyExistsException(AppException):
-    """Raised when an entity already exists in database."""
+    """Raised when an entity conflict occurs in the database (HTTP 400)."""
     def __init__(self, message: str = "Entity already exists"):
         super().__init__(message, status_code=400)
 
