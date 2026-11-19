@@ -1,3 +1,4 @@
+"""Endpoints for creating, validating, and retrieving highlighted node selections."""
 from typing import List, Optional
 import uuid
 import logging
