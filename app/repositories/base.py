@@ -10,6 +10,7 @@ UpdateSchemaType = TypeVar("UpdateSchemaType", bound=BaseModel)
 
 
 class BaseRepository(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
+    """Generic CRUD repository isolating common SQLAlchemy database interactions."""
     def __init__(self, model: Type[ModelType]):
         """
         Base SQL Repository containing standard CRUD operations.
