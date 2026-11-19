@@ -74,7 +74,11 @@ Navigate to the interactive documentation:
 
 ### 4. Run Test Suite
 ```bash
-python -m pytest tests/
+python -m pytest tests/ -v
+```
+To run specific service or API tests:
+```bash
+python -m pytest tests/test_api/ -v
 ```
 
 ---
