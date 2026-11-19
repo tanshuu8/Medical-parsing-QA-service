@@ -1,3 +1,4 @@
+"""Interactive CLI demo illustrating document ingestion, selection, and staleness detection."""
 import os
 import sys
 import time
