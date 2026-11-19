@@ -37,7 +37,7 @@ app/
 ### 1. Requirements Setup
 Ensure Python 3.10+ is installed on your host system:
 ```bash
-pip install -r requirements.txt
+python -m pip install -r requirements.txt
 ```
 
 ### 2. Environment Variables Configuration
