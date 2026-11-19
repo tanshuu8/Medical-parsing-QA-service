@@ -15,6 +15,7 @@ engine = create_engine(
 )
 
 
+# Register SQLite event listener to ensure relational integrity
 @event.listens_for(engine, "connect")
 def set_sqlite_pragma(dbapi_connection, connection_record):
     """
