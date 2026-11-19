@@ -11,7 +11,7 @@ from app.services.llm import LLMServiceInterface, GeminiLLMService
 
 def get_db() -> Generator[Session, None, None]:
     """
-    Dependency injection provider yielding standard SQLite sessions.
+    FastAPI dependency injection provider yielding transactional SQLite sessions.
     """
     db = SessionLocal()
     try:
