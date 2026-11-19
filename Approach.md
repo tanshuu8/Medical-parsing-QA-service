@@ -46,7 +46,7 @@ The project follows a **Layered Clean Architecture** and **Domain-Driven Design 
 Document files are ingested via FastAPI `UploadFile` as `multipart/form-data`. The file bytes are streamed into a secure `tempfile.NamedTemporaryFile` with `delete=False`. The absolute file path is passed to the `PDFParserService` layout analyzer. Once parsing is complete, the temporary file is immediately unlinked using `os.unlink` inside a `finally` block, ensuring no temporary files accumulate on disk.
 
 ### Layout Analysis:
-We parse PDFs using **PyMuPDF (fitz)** because it is faster and exposes detailed font size and layout metadata compared to other options. We read pages using `page.get_text("dict")`, which returns structural text blocks, lines, and spans. Spans capture `text`, `size`, and `flags` (indicating bold face, italicized options, etc.).
+We parse PDFs using **PyMuPDF (`fitz`)** for high extraction performance and low-level access to font sizes, block coordinates, and span metadata. We read pages using `page.get_text("dict")`, which returns structural text blocks, lines, and spans. Spans capture `text`, `size`, and `flags` (indicating bold face, italicized options, etc.).
 
 ### Calibrating Headings:
 To ensure the parser remains layout-agnostic, we run a preliminary **calibration pass** across the document to calculate font size frequencies:
