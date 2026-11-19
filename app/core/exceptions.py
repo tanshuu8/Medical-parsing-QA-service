@@ -24,7 +24,7 @@ class EntityAlreadyExistsException(AppException):
 
 
 class ExternalServiceException(AppException):
-    """Raised when an external API (like Gemini) fails."""
+    """Raised when an external third-party API service fails (HTTP 502)."""
     def __init__(self, message: str = "External service integration error", details: dict = None):
         super().__init__(message, status_code=502)
         self.details = details or {}
