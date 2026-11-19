@@ -6,6 +6,7 @@ from app.models.base import Base
 
 
 class Document(Base):
+    """Represents an ingested medical device manual specification document."""
     """
     SQLAlchemy model representing an ingested PDF document.
     
