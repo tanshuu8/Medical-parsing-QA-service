@@ -5,6 +5,7 @@ from pydantic import BaseModel, ConfigDict, Field, field_validator
 
 
 class DocumentBase(BaseModel):
+    """Base schema attributes shared across document request and response models."""
     name: str = Field(..., max_length=255, description="Name of the document file")
     version: str = Field(..., max_length=50, description="Version code/tag of the document")
 
