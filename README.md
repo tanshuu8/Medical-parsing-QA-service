@@ -18,7 +18,7 @@ A production-quality RAG (Retrieval-Augmented Generation) backend system designe
 
 ## Architectural Layout
 
-The system implements a **Layered Clean Architecture** separating domain logic, data persistence, external service interfaces, and routing:
+The system implements a **Layered Clean Architecture**, maintaining separation between domain logic, persistence layers, external service integrations, and API routing:
 
 ```text
 app/
