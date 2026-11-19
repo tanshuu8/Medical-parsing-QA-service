@@ -1,3 +1,4 @@
+"""Endpoints for retrieving hierarchical document nodes and outline structures."""
 from typing import List, Optional
 import uuid
 from fastapi import APIRouter, Depends, HTTPException, status
