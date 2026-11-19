@@ -1,3 +1,4 @@
+"""Integration tests for document upload, retrieval, and deletion endpoints."""
 from fastapi.testclient import TestClient
 
 
