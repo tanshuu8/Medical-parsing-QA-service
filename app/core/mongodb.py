@@ -19,7 +19,7 @@ class MongoDBManager:
         logger.info(f"Successfully connected to MongoDB database: {settings.MONGODB_DB_NAME}")
 
     def close(self) -> None:
-        """Close connection pool."""
+        """Close active Motor client connection pool."""
         if self.client:
             logger.info("Closing MongoDB connection pool.")
             self.client.close()
