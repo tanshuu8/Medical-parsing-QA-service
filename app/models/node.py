@@ -7,6 +7,7 @@ from app.models.base import Base
 
 
 class Node(Base):
+    """Represents a structural element (heading, section, table) within a document."""
     """
     SQLAlchemy model representing a parsed text block/chunk from a document.
     
