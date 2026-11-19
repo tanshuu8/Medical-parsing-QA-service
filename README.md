@@ -41,7 +41,8 @@ python -m pip install -r requirements.txt
 ```
 
 ### 2. Environment Variables Configuration
-Copy the configuration template:
+
+Copy the configuration template into your local `.env`:
 ```bash
 cp .env.example .env
 ```
