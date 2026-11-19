@@ -10,6 +10,7 @@ from app.repositories.base import BaseRepository
 
 
 class SelectionRepository(BaseRepository[Selection, SelectionCreate, SelectionCreate]):
+    """Repository managing Selection entities and association table linkages."""
     def __init__(self):
         super().__init__(Selection)
 
