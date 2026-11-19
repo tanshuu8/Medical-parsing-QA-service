@@ -203,6 +203,8 @@ python -m pytest tests/test_api/ -v
 
 ## Core System Workflows
 
+Detailed lifecycle flows of the ingestion, validation, and generation subsystems.
+
 ### 1. Document Versioning & Matching Workflow
 When uploading a new document version (e.g. V2), the system does not overwrite the existing V1 records. It ingests V2, and if V1 is found, it performs node alignment:
 - Identifies exact matches via cryptographic `content_hash` (tagged `UNCHANGED`).
