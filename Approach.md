@@ -1,6 +1,6 @@
 # Technical Approach & Design Log
 
-This document details the architectural strategies, parsing heuristics, alignment pipelines, and design decisions implemented in the AI Medical Ingestion & QA Generation Service.
+This document details the architectural strategies, parsing heuristics, alignment pipelines, and design decisions implemented across the AI Medical Ingestion & QA Generation Service.
 
 ---
 
