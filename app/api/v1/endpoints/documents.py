@@ -221,7 +221,7 @@ def delete_document(
     db: Session = Depends(get_db)
 ) -> DocumentResponse:
     """
-    Delete a document and cascade delete its associated nodes.
+    Delete a document and cascade delete its associated nodes from the database.
     """
     doc = document_repo.get(db, id=document_id)
     if not doc:
