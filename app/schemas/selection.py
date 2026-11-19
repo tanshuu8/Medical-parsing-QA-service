@@ -6,6 +6,7 @@ from pydantic import BaseModel, ConfigDict, Field, field_validator
 
 
 class SelectionBase(BaseModel):
+    """Base attributes for user node highlight selections."""
     name: str = Field(..., max_length=255, description="Name of the selection")
     document_version: str = Field(..., max_length=50, description="Version of the document on which selection was made")
 
