@@ -6,6 +6,7 @@ from app.models.base import Base
 
 
 class Selection(Base):
+    """Represents a version-pinned user highlight across one or more document nodes."""
     """
     SQLAlchemy model representing a user selection/highlight.
     
