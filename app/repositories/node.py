@@ -8,6 +8,7 @@ from app.repositories.base import BaseRepository
 
 
 class NodeRepository(BaseRepository[Node, NodeCreate, NodeCreate]):
+    """Repository handling hierarchical Node queries and recursive tree traversals."""
     def __init__(self):
         super().__init__(Node)
 
