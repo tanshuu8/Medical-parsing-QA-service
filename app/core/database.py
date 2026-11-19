@@ -42,8 +42,8 @@ class Base(DeclarativeBase):
 
 def get_db():
     """
-    Generator dependency to yield SQL database sessions.
-    Cleans up and closes the session after request lifecycle.
+    Generator dependency yielding an isolated transactional SQLite session.
+    Ensures proper cleanup and closure upon completion of request lifecycle.
     """
     db = SessionLocal()
     try:
