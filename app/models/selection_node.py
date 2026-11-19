@@ -5,6 +5,7 @@ from app.models.base import Base
 
 
 class SelectionNode(Base):
+    """Association table linking Selection entities to their included Node records."""
     """
     SQLAlchemy association model linking Selection to Nodes (Many-to-Many junction).
     Uses composite keys as primary keys and indexes.
