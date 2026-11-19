@@ -10,7 +10,7 @@ class Settings(BaseSettings):
     API_V1_STR: str = "/api/v1"
     LOG_LEVEL: str = "INFO"
 
-    # SQLite database URL
+    # SQLite database URL (default local storage file)
     # e.g., sqlite:///./sql_app.db
     DATABASE_URL: str = "sqlite:///./sql_app.db"
 
