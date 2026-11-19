@@ -9,7 +9,7 @@ class MongoDBManager:
         self.db = None
 
     def connect(self) -> None:
-        """Initialize Motor client and connect to database."""
+        """Initialize asynchronous Motor client connection pool to MongoDB."""
         logger.info(f"Connecting to MongoDB at: {settings.MONGODB_URL}")
         self.client = AsyncIOMotorClient(
             settings.MONGODB_URL,
