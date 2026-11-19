@@ -4,6 +4,7 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
 class Settings(BaseSettings):
+    """Application configuration settings loaded from environment variables."""
     # App Settings
     PROJECT_NAME: str = "AI Medical Parsing & QA Service"
     API_V1_STR: str = "/api/v1"
