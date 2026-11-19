@@ -5,5 +5,11 @@ __pycache__/
 .env
 .ipynb_checkpoints/
 *.db
+
+# Distribution and build artifacts
+build/
+dist/
+*.egg-info/
+
 .agents/
 .gemini/
