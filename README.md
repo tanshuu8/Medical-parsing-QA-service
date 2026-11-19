@@ -52,7 +52,7 @@ PROJECT_NAME="AI Medical Parsing & QA Service"
 API_V1_STR="/api/v1"
 LOG_LEVEL="INFO"
 
-# SQLite DB Connection
+# SQLite DB Connection (Use 3 slashes for relative path, 4 for absolute)
 DATABASE_URL="sqlite:///./sql_app.db"
 
 # MongoDB DB Connection
