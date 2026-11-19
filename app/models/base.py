@@ -1,3 +1,4 @@
+"""Declarative base class export for all SQLAlchemy ORM models."""
 from app.core.database import Base
 
 # Export base class for all SQLAlchemy models to inherit from
