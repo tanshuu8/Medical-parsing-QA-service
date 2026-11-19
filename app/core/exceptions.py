@@ -12,7 +12,7 @@ class AppException(Exception):
 
 
 class EntityNotFoundException(AppException):
-    """Raised when a database entity is not found."""
+    """Raised when a requested database entity is not found (HTTP 404)."""
     def __init__(self, message: str = "Entity not found"):
         super().__init__(message, status_code=404)
 
