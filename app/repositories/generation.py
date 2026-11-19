@@ -7,6 +7,7 @@ from app.schemas.generation import QAGenerationCreate
 
 
 class QAGenerationRepository:
+    """Data access repository for logging and retrieving LLM generations in MongoDB."""
     def __init__(self):
         self.collection_name = "qa_generations"
 
